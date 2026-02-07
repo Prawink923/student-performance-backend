@@ -3,12 +3,21 @@ from flask_cors import CORS
 import joblib
 import numpy as np
 from db import get_connection
+import os
 
+# -----------------------------
+# Load ML model (CORRECT WAY)
+# -----------------------------
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(BASE_DIR, "model.pkl")   # model.pkl is inside backend
+
+model = joblib.load(model_path)
+
+# -----------------------------
+# Flask App
+# -----------------------------
 app = Flask(__name__)
 CORS(app)
-
-# Load ML model
-model = joblib.load("../ml_model/model.pkl")
 
 @app.route("/")
 def home():
@@ -46,4 +55,4 @@ def predict():
     return jsonify({"prediction": result})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
